@@ -1,10 +1,14 @@
+#=
 abstract type OperatorStyle end
 
 struct ArityUnknown <: OperatorStyle end
 struct HasArity{N} <: OperatorStyle end
 
-const Nullarity = HasArity{0}
-const Unarity = HasArity{1}
+=#
+struct Arity{N} end
+
+const Nullarity = Arity{0}
+const Unarity = Arity{1}
 #const Binarity = HasArity{2}
 #const Ternarity = HasArity{3}
 #const Quaternarity = HasArity{4}
@@ -17,9 +21,9 @@ An operator is a function that takes a variable number of `AbstractArray`s as in
 """
 abstract type Operator{S} <: Function end
 
-OperatorStyle(::Type{<:Operator{S}}) where {S} = S()
+Arity(::Type{<:Operator{S}}) where {S} = S()
 
-OperatorStyle(::O) where {O<:Operator} = OperatorStyle(O)
+Arity(::O) where {O<:Operator} = Arity(O)
 
 abstract type Primitive{S} <: Operator{S} end
 

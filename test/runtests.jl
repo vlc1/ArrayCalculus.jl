@@ -1,8 +1,16 @@
 using ArrayOperations
 using Test
 
+const ∇₁ = ∇{Tuple{1}}()
+const ∇₂ = ∇{Tuple{2}}()
+const ∇₃ = ∇{Tuple{3}}()
+
+const ∂₁ = ∂{1}()
+const ∂₂ = ∂{2}()
+const ∂₃ = ∂{3}()
+
 @testset "Binary" begin
-    struct BinOp <: Primitive{HasArity{2}} end
+    struct BinOp <: Primitive{Arity{2}} end
 
     (::BinOp)((x, y)::NTuple{2,AbstractVector}, i::Int) = x[i] * y[i-1]
 
@@ -16,13 +24,13 @@ using Test
     h = f((x, y))
 
     # fix all arguments but the first, then fix first
-    g₁ = Loose{1}(f, (y,))
+    g₁ = ∂₁(f, (y,))
     h′ = g₁((x,))
 
     @test isequal(h, h′)
 
     # fix all arguments but the second, then fix second
-    g₂ = Loose{2}(f, (x,))
+    g₂ = ∂₂(f, (x,))
     h″ = g₂((y,))
 
     @test isequal(h, h″)
@@ -33,7 +41,7 @@ using Test
 end
 
 @testset "Ternary" begin
-    struct TerOp <: Primitive{HasArity{3}} end
+    struct TerOp <: Primitive{Arity{3}} end
 
     (::TerOp)((x, y, z)::NTuple{3,AbstractVector}, i::Int) = x[i] * y[i-1] .- z[i+1]
 
@@ -47,19 +55,19 @@ end
     h = f((x, y, z))
 
     # fix all arguments but the first, then fix it
-    g₁ = Loose{1}(f, (y, z))
+    g₁ = ∂₁(f, (y, z))
     h′ = g₁((x,))
 
     @test isequal(h, h′)
 
     # fix all arguments but the second, then fix it
-    g₂ = Loose{2}(f, (x, z))
+    g₂ = ∂₂(f, (x, z))
     h″ = g₂((y,))
 
     @test isequal(h, h″)
 
     # fix all arguments but the third, then fix it
-    g₃ = Loose{3}(f, (x, y))
+    g₃ = ∂₃(f, (x, y))
     h‴ = g₃((z,))
 
     @test isequal(h, h‴)

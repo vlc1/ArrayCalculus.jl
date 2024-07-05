@@ -1,3 +1,20 @@
+# Reimplement using a `Partial` type similar to `Nabla`, then
+#
+# - `∂{Tuple{N}}`: keep `N`*th* variable constant,
+# - `∂{Tuple{M,N}`: keep `M`*th* and `N`*th* variables constants,
+# - and so forth and so on.
+#
+# Both are "higher-order" functions, in the sense that they take
+# operators are input, and output another operator.
+#
+struct Variable{N} <: Function end
+
+const ∂ = Variable
+
+Base.print_without_params(::Type{<:∂}) = false
+
+Dim(::Type{<:∂{N}}) where {N} = Dim{N}()
+
 """
 
     Loosened{N}(op, args)
@@ -31,6 +48,11 @@ operator(this::Loose) = this.op
 arguments(this::Loose) = this.args
 
 # interface
+
+(::∂)(::Ret, _) = error("No variable.")
+(::∂{1})(op::Unary, ::Tup{}) = op
+
+(::∂{N})(op::Operator, args) where {N} = Loose{N}(op, args)
 
 function (this::Loose{N})((arg,)::Tup{AArr}, I::Int...) where {N}
     op = operator(this)

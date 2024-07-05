@@ -3,34 +3,41 @@ module ArrayOperations
 import Base: size,
              getindex
 
-export ∂,
+using TupleTools
+
+export Dim,
+       ∇,
+       ∂,
+       Arity,
        Operator,
        Primitive,
 #       AbstractAry,
-       HasArity,
-       ArityUnknown,
+#       ArityUnknown,
        operator,
        arguments,
        Ret,
        Loose,
-       derive,
+#       derive,
        Jac,
+       Hess,
        Operation
 
-struct WithRespectTo{N} <: Function end
-
-const ∂ = WithRespectTo
-
-Base.print_without_params(::Type{<:∂}) = false
+# Dim?
+#struct WithRespectTo{N} <: Function end
+struct Dim{N} end
+#
+#const ∂ = WithRespectTo
+#
+#Base.print_without_params(::Type{<:∂}) = false
 
 include("aliases.jl")
 include("exceptions.jl")
 #include("arity.jl")
 include("operators.jl")
 #include("sparsity.jl")
-include("loosened.jl")
 include("returned.jl")
-include("jacobian.jl")
+include("loosened.jl")
+include("derivatives.jl")
 include("operations.jl")
 
 end
