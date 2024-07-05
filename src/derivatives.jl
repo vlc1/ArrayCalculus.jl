@@ -16,10 +16,20 @@ const ∇ = Nabla
 
 Base.print_without_params(::Type{<:∇}) = false
 
+# accessors
+
+Dim{N}(::∇{T}) where {N,T} = Dim{fieldtype(T, N)}()
+
+Dim(::∇{Tuple{N}}) where {N} = Dim{N}()
+
+# interface
+
 (::∇)(::Ret) = error("Not differentiable.")
 
 (::∇{NTup{P,1}})(this::Loose{N}) where {P,N} =
     Loose{N}(∇{NTup{P,N}}()(operator(this)), arguments(this))
+
+(nabla::∇)(this::Primitive) = Der(nabla, this)
 
 
 """
@@ -40,36 +50,8 @@ const Der = Derivative
 
 ∇(::Type{<:Der{T}}) where {T} = ∇{T}()
 
+∇(::O) where {O<:Der} = ∇(O)
+
 operator(this::Der) = this.op
 
 (::Der)(::TupN{AArr}, args...) = error("Needs implementing.")
-
-
-"""
-
-    Jacobian
-
-
-"""
-const Jacobian{N} = Der{Tup{N}}
-
-const Jac = Jacobian
-
-Base.print_without_params(::Type{<:Jac}) = false
-
-#
-
-(nabla::∇)(this::Primitive) = Der(nabla, this)
-
-
-"""
-
-    Hessian
-
-
-"""
-const Hessian{M,N} = Der{Tup{M,N}}
-
-const Hess = Hessian
-
-Base.print_without_params(::Type{<:Hess}) = false

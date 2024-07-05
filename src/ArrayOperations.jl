@@ -1,5 +1,7 @@
 module ArrayOperations
 
+using Base.Cartesian
+
 import Base: size,
              getindex
 
@@ -10,6 +12,11 @@ export Dim,
        ∂,
        Arity,
        Operator,
+       OperatorSupport,
+       NullSupport,
+       HasStencil,
+       Stencil,
+       PointWise,
        Primitive,
 #       AbstractAry,
 #       ArityUnknown,
@@ -34,10 +41,13 @@ include("aliases.jl")
 include("exceptions.jl")
 #include("arity.jl")
 include("operators.jl")
-#include("sparsity.jl")
+include("supports.jl")
+include("stencils.jl")
 include("returned.jl")
 include("loosened.jl")
 include("derivatives.jl")
+include("jacobians.jl")
+include("hessians.jl")
 include("operations.jl")
 
 end
