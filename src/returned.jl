@@ -9,7 +9,13 @@ Base.print_without_params(::Type{<:Ret}) = false
 
 # constructors
 
-function Ret(this::Fix{N}, (arg,)::Tup{AArr}) where {N}
+(this::Operator)(args::TupN{AArr}) =
+    _returned(OperatorStyle(this), this, args)
+
+_returned(::HasArity{N}, this::Operator, args::NTup{N,AArr}) where {N} = Ret(this, args)
+_returned(::OperatorStyle, this::Operator, args::TupN{AArr}) = throw("Not defined.")
+
+function Ret(this::Loose{N}, (arg,)::Tup{AArr}) where {N}
     op = operator(this)
     args = arguments(this)
 
