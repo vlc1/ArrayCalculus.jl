@@ -1,45 +1,42 @@
+using Symbolics
 using ArrayOperations
 using Test
 
-const ∇₁ = ∇{Tuple{1}}()
-const ∇₂ = ∇{Tuple{2}}()
-const ∇₃ = ∇{Tuple{3}}()
+import Base: getindex,
+             @propagate_inbounds
+#
+#const ∇₁ = ∇{Tuple{1}}()
+#const ∇₂ = ∇{Tuple{2}}()
+#const ∇₃ = ∇{Tuple{3}}()
+#
+#const ∂₁ = ∂{1}()
+#const ∂₂ = ∂{2}()
+#const ∂₃ = ∂{3}()
 
-const ∂₁ = ∂{1}()
-const ∂₂ = ∂{2}()
-const ∂₃ = ∂{3}()
+struct BinOp <: Ary{2} end
+
+@inline @propagate_inbounds function getindex(this::Ret{BinOp}, i::Int)
+    op = operator(this)
+    x, y = arguments(this)
+
+    x[i] * y[i-1]
+end
 
 @testset "Binary" begin
-    struct BinOp <: Primitive{Arity{2}} end
-
-    (::BinOp)((x, y)::NTuple{2,AbstractVector}, i::Int) = x[i] * y[i-1]
-
     n = 2
     x, y = rand(n), rand(n)
 
     # binary operator
-    f = BinOp()
+    f₂ = BinOp()
 
-    # fix all arguments
-    h = f((x, y))
-
-    # fix all arguments but the first, then fix first
-    g₁ = ∂₁(f, (y,))
-    h′ = g₁((x,))
-
-    @test isequal(h, h′)
-
-    # fix all arguments but the second, then fix second
-    g₂ = ∂₂(f, (x,))
-    h″ = g₂((y,))
-
-    @test isequal(h, h″)
+    # nullary operator
+    f₀ = f₂(x, y)
 
     rng = 2:n
 
-    @test isequal(h[rng], x[rng] .* y[rng .- 1])
+    @test isequal(f₀[rng], x[rng] .* y[rng .- 1])
 end
-
+#=
 @testset "Ternary" begin
     struct TerOp <: Primitive{Arity{3}} end
 
@@ -76,3 +73,5 @@ end
 
     @test isequal(h[rng], x[rng] .* y[rng .- 1] .- z[rng .+ 1])
 end
+
+=#

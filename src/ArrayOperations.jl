@@ -1,33 +1,50 @@
 module ArrayOperations
 
-using Base.Cartesian
+using Base: @propagate_inbounds
 
 import Base: size,
-             getindex
+             getindex,
+             *
 
-using TupleTools
+using Base.Cartesian
+#
+#import Base.Broadcast: broadcasted
+
+using TupleTools,
+      StaticArrays,
+      Symbolics
+
+import Symbolics: arguments
 
 export Dim,
        ∇,
-       ∂,
+#       ∂,
        Arity,
        Operator,
-       OperatorSupport,
-       NullSupport,
-       HasStencil,
-       Stencil,
-       PointWise,
-       Primitive,
+#       OperatorSupport,
+#       NullSupport,
+#       HasStencil,
+#       Stencil,
+#       PointWise,
+#       Primitive,
+       Ary,
 #       AbstractAry,
 #       ArityUnknown,
        operator,
-       arguments,
+#       arguments,
        Ret,
-       Loose,
+#       Loose,
 #       derive,
        Jac,
        Hess,
-       Operation
+#       Partially,
+#       Fully,
+       Operation,
+       Forward,
+       Backward,
+       ⊙,
+#       Broadcasted,
+       Scaled
 
 # Dim?
 #struct WithRespectTo{N} <: Function end
@@ -41,13 +58,17 @@ include("aliases.jl")
 include("exceptions.jl")
 #include("arity.jl")
 include("operators.jl")
-include("supports.jl")
-include("stencils.jl")
+#include("supports.jl")
+#include("stencils.jl")
+#include("loosened.jl")
 include("returned.jl")
-include("loosened.jl")
-include("derivatives.jl")
+#include("partials.jl")
+include("nablas.jl")
 include("jacobians.jl")
 include("hessians.jl")
 include("operations.jl")
+include("primitives.jl")
+include("pointwise.jl")
+include("scaled.jl")
 
 end

@@ -15,7 +15,7 @@ struct Operation{T,N,O<:Nullary,R<:NTuple{N,AURange}} <: AArr{T,N}
     rngs::R
 
     function Operation(op::O, rngs::R) where {N,O<:Nullary,R<:NTuple{N,AURange}}
-        T = Base._return_type(op, Tuple{Vararg{Int,N}})
+        T = Base._return_type(getindex, Tuple{O,Vararg{Int,N}})
         new{T,N,O,R}(op, rngs)
     end
 end
@@ -35,5 +35,5 @@ size(this::Operation) = length.(ranges(this))
 
 function getindex(this::Operation{T,N}, I::Varg{Int,N}) where {T,N}
     J = getindex.(ranges(this), I)
-    operator(this)(J...)
+    getindex(operator(this), J...)
 end

@@ -3,11 +3,6 @@
     OperatorSupport
 
 
-!!! warning
-
-    Applicable to Derivative only.
-
-
 """
 abstract type OperatorSupport end
 
