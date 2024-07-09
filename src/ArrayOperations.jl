@@ -4,7 +4,9 @@ using Base: @propagate_inbounds
 
 import Base: size,
              getindex,
-             *
+             *,
+             +,
+             -
 
 using Base.Cartesian
 #

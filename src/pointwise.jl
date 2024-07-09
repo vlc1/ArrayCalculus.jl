@@ -28,3 +28,7 @@ arguments(this::⊙) = this.args
 
     f(args...)
 end
+
+(+)(args::Union{Nullary,AArr}...) = ⊙(+, args)
+(*)(args::Union{Nullary,AArr}...) = ⊙(*, args)
+(-)(args::Varg{Union{Nullary,AArr},2}) = ⊙(-, args)
