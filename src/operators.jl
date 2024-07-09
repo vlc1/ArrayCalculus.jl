@@ -55,6 +55,8 @@ Abstract type for operators supporting exacty `N` arguments.
 abstract type AbstractAry{N} <: Operator end
 
 =#
+
+# Nullary operator should implement eltype
 const Nullary = Operator{Nullarity}
 const Unary = Operator{Unarity}
 #const Binary = Operator{Binarity}

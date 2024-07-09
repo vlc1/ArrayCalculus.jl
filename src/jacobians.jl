@@ -4,12 +4,13 @@
 
 
 """
-const Jacobian{N} = Diff{Tup{N}}
+const Jacobian{N,O,S} = Diff{Tup{N},S,O}
 
 const Jac = Jacobian
 
 Base.print_without_params(::Type{<:Jac}) = false
 
+#
 #
 #
 #getindex(this::Fully{<:Jac}, _...) = error("Implement using stencils.")

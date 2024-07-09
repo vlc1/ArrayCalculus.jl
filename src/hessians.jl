@@ -4,7 +4,7 @@
 
 
 """
-const Hessian{M,N} = Diff{Tup{M,N}}
+const Hessian{M,N,O,S} = Diff{Tup{M,N},S,O}
 
 const Hess = Hessian
 

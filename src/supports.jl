@@ -10,8 +10,15 @@ struct SupportUnknown <: OperatorSupport end
 struct NullSupport <: OperatorSupport end
 struct HasStencil <: OperatorSupport end
 
-OperatorSupport(::O, args::Dim...) where {O<:Operator} =
-    OperatorSupport(O, args...)
+OperatorSupport(::Type) = SupportUnknown()
 
-# default
-OperatorSupport(::Type{<:Operator}, ::Dim...) = SupportUnknown()
+OperatorSupport(::O) where {O} = OperatorSupport(O)
+
+#
+
+@inline @propagate_inbounds getindex(this::Nullary, I...) =
+    getindex_support(OperatorSupport(this), this, I...)
+
+# if operator vanishes, define getindex(this::O, ::Type{Tuple{}})
+@inline @propagate_inbounds getindex_support(::NullSupport, this::Nullary, I...) =
+    getindex(this, Tuple{})

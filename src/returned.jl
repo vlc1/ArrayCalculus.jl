@@ -20,6 +20,14 @@ arguments(this::Ret) = this.args
 (this::Ary{N})(args::Varg{Any,N}) where {N} = Returned(this, args)
 
 (this::Nullary)() = this
+
+#
+
+eltype(this::Ret) = Base.promote_eltype(arguments(this)...)
+
+@inline @propagate_inbounds getindex_support(::NullSupport, this::Ret, I...) =
+    zero(Base.promote_eltype(arguments(this)...))
+
 #=
 
 """

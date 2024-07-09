@@ -2,7 +2,8 @@ module ArrayOperations
 
 using Base: @propagate_inbounds
 
-import Base: size,
+import Base: eltype,
+             size,
              getindex,
              *,
              +,
@@ -23,9 +24,11 @@ export Dim,
 #       ∂,
        Arity,
        Operator,
-#       OperatorSupport,
-#       NullSupport,
-#       HasStencil,
+       OperatorSupport,
+       NullSupport,
+       HasStencil,
+       Stencil,
+       Singleton,
 #       Stencil,
 #       PointWise,
 #       Primitive,
@@ -60,8 +63,8 @@ include("aliases.jl")
 include("exceptions.jl")
 #include("arity.jl")
 include("operators.jl")
-#include("supports.jl")
-#include("stencils.jl")
+include("supports.jl")
+include("stencils.jl")
 #include("loosened.jl")
 include("returned.jl")
 #include("partials.jl")
