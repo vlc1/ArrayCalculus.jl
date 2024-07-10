@@ -25,8 +25,10 @@ getindex_jac(::HasStencil, this::Ret{<:Jac{N,O}}, ind::Int...) where {N,O} =
 #
 
 function getindex_jac(f::Singleton{T}, this, ind::Int...) where {N,T<:NTup{N,Any}}
-    row = ind[begin:begin+N-1]
-    col = ind[begin+N:end]
+    is = ind[begin:begin+N-1]
+    js = ind[begin+N:end]
 
-    ifelse(isequal(only(f(row...)), col), getindex(this, row, T), zero(eltype(this)))
+    neighbor = only(f(is))
+
+    ifelse(collocates(neighbor, js), getindex(this, neighbor), zero(eltype(this)))
 end

@@ -24,3 +24,12 @@ arguments(this::Ret) = this.args
 #
 
 eltype(this::Ret) = Base.promote_eltype(arguments(this)...)
+
+function axes(this::Ret{O,A}) where {O,N,A<:NTup{N,Any}}
+    args = arguments(this)
+    f = Broadcast.BroadcastFunction(intersect)
+
+    mapreduce(f, eachindex(args), args) do n, arg
+        trim(O, Dim{n}(), axes(arg))
+    end
+end

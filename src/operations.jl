@@ -29,6 +29,8 @@ ranges(this::Operation) = this.rngs
 
 getindex(op::Nullary, rngs::AURange...) = Operation(op, rngs)
 
+getindex(op::Nullary, ::Colon...) = Operation(op, axes(op))
+
 # array interface
 
 size(this::Operation) = length.(ranges(this))

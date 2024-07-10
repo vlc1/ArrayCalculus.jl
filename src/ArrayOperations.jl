@@ -1,8 +1,12 @@
 module ArrayOperations
 
-using Base: @propagate_inbounds
+using Base: @propagate_inbounds,
+            tail
 
 import Base: eltype,
+             length,
+             iterate,
+             isdone,
              size,
              axes,
              getindex,
@@ -29,6 +33,9 @@ export Dim,
        NullSupport,
        HasStencil,
        stencil,
+       Neighbor,
+       collocates,
+       origin,
        Singleton,
 #       PointWise,
 #       Primitive,
