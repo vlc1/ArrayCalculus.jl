@@ -56,7 +56,7 @@ abstract type AbstractAry{N} <: Operator end
 
 =#
 
-# Nullary operator should implement eltype
+# Nullary operator should implement eltype and axes
 const Nullary = Operator{Nullarity}
 const Unary = Operator{Unarity}
 #const Binary = Operator{Binarity}
