@@ -4,6 +4,9 @@ using Test
 
 import Base: getindex,
              @propagate_inbounds
+
+import ArrayOperations: OperatorSupport,
+                        Stencil
 #
 #const ∇₁ = ∇{Tuple{1}}()
 #const ∇₂ = ∇{Tuple{2}}()
@@ -21,6 +24,12 @@ struct BinOp <: Ary{2} end
 
     x[i] * y[i-1]
 end
+
+OperatorSupport(::Type{BinOp}, ::Dim{1}) = HasStencil()
+Stencil(::Type{BinOp}, ::Dim{1}) = LocalStencil()
+
+OperatorSupport(::Type{BinOp}, ::Dim{2}) = HasStencil()
+Stencil(::Type{BinOp}, ::Dim{2}) = LinearStencil{1,-1,1}()
 
 @testset "Binary" begin
     n = 2

@@ -9,12 +9,15 @@ import Base: eltype,
              first,
              tail,
              isdone,
+             length,
              size,
              axes,
              getindex,
              *,
              +,
              -
+
+import Base.Broadcast: broadcastable
 
 using Base.Cartesian
 #
@@ -41,7 +44,7 @@ export Dim,
        NullSupport,
        HasStencil,
        Stencil,
-       Singleton,
+#       Singleton,
        LocalStencil,
        LinearStencil,
 #       PointWise,

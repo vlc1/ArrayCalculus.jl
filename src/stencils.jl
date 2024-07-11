@@ -3,7 +3,7 @@ abstract type Stencil end
 Stencil(::Type, dim) = error("Not implemented.")
 
 Stencil(::O, dim) where{O} = Stencil(O, dim)
-
+#=
 
 """
 
@@ -23,6 +23,7 @@ function trim_stencil(::Singleton{T}, args::NTup{N,AURange}) where {N,T<:NTup{N,
     end
 end
 
+=#
 
 """
 

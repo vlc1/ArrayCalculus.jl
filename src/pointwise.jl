@@ -19,7 +19,7 @@ arguments(this::⊙) = this.args
 
 # interface
 
-@inline @propagate_inbounds function getindex(this::⊙, I...)
+@inline @propagate_inbounds function getindex(this::⊙, I::Int...)
     f = handle(this)
 
     args = map(arguments(this)) do el
@@ -27,6 +27,19 @@ arguments(this::⊙) = this.args
     end
 
     f(args...)
+end
+
+function eltype(this::⊙)
+    f = handle(this)
+    args = arguments(this)
+
+    Base._return_type(f, Tuple{eltype.(args)...})
+end
+
+function axes(this::⊙)
+    args = arguments(this)
+    f = Broadcast.BroadcastFunction(intersect)
+    mapreduce(axes, f, args)
 end
 
 (+)(args::Union{Nullary,AArr}...) = ⊙(+, args)
