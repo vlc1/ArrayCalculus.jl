@@ -6,6 +6,8 @@ using Base: @propagate_inbounds,
 import Base: eltype,
              length,
              iterate,
+             first,
+             tail,
              isdone,
              size,
              axes,
@@ -29,14 +31,19 @@ export Dim,
 #       ∂,
        Arity,
        Operator,
-       OperatorSupport,
-       NullSupport,
-       HasStencil,
-       stencil,
        Neighbor,
        collocates,
        origin,
+       eachneighbor,
+       LocalNeighborhood,
+       LinearNeighborhood,
+       OperatorSupport,
+       NullSupport,
+       HasStencil,
+       Stencil,
        Singleton,
+       LocalStencil,
+       LinearStencil,
 #       PointWise,
 #       Primitive,
        Ary,
@@ -67,9 +74,11 @@ struct Dim{N} end
 #Base.print_without_params(::Type{<:∂}) = false
 
 include("aliases.jl")
+include("utils.jl")
 include("exceptions.jl")
 #include("arity.jl")
 include("operators.jl")
+include("neighbors.jl")
 include("supports.jl")
 include("stencils.jl")
 #include("loosened.jl")

@@ -1,60 +1,17 @@
-stencil(::Type, dim) = error("Not implemented.")
+abstract type Stencil end
 
-stencil(::O, dim) where{O} = stencil(O, dim)
+Stencil(::Type, dim) = error("Not implemented.")
 
-#
-
-struct Neighbor{N,T<:Tup}
-    I::NTup{N,Int}
-
-    Neighbor{T}(args::NTup{N,Int}) where {N,T<:NTup{N,Any}} = new{N,T}(args)
-end
-
-# accessors
-
-origin(this::Neighbor) = this.I
-
-# interface
-#
-#getindex(this::Neighbor{T}, i::Int) where {T} =
-#    getindex(Tuple(this), i) + fieldtype(T, i)
-#
-#iterate(::Neighbor{0,Tuple{}}) = nothing
-#
-Base.IteratorSize(::Neighbor) = Base.HasLength()
-
-Base.IteratorEltype(::Neighbor) = Base.HasEltype()
-
-eltype(::Type{<:Neighbor}) = Int
-
-length(::Neighbor{N}) where {N} = N
-
-isdone(this::Neighbor, state::Neighbor=this) =iszero(length(state))
-
-iterate(::Neighbor, ::Neighbor{0,Tuple{}}) = nothing
-
-function iterate(this::Neighbor, state::Neighbor{N,T}=this) where {N,T}
-    el, args... = origin(state)
-    el + fieldtype(T, 1), Neighbor{Tuple{tail(fieldtypes(T))...}}(args)
-end
-
-collocates(this::Neighbor{0}, ::Tuple{}) = true
-
-# leverages the fact that `state <: Neighbor`
-function collocates(prev::Neighbor{N}, (x, args...)::NTup{N,Int}) where {N}
-    el, next = iterate(prev)
-    isequal(el, x) && collocates(next, args)
-end
-
-# row(this) .+ fieldtypes(T)
-
-"""
-
-    Singleton{NTuple{M,::Int}}
+Stencil(::O, dim) where{O} = Stencil(O, dim)
 
 
 """
-struct Singleton{T} end
+
+    Singleton{NTuple{N,::Int}}
+
+
+"""
+struct Singleton{T} <: Stencil end
 
 (::Singleton{T})(args::NTup{N,Int}) where {N,T<:NTup{N,Any}} = Ref(Neighbor{T}(args))
 
@@ -63,5 +20,38 @@ struct Singleton{T} end
 function trim_stencil(::Singleton{T}, args::NTup{N,AURange}) where {N,T<:NTup{N,Any}}
     map(fieldtypes(T), args) do i, arg
         range(first(arg) - min(i, 0), last(arg) - max(i, 0))
+    end
+end
+
+
+"""
+
+    LocalStencil
+
+
+"""
+struct LocalStencil <: Stencil end
+
+eachneighbor(::LocalStencil, args::TupN{Int}) = LocalHood(args)
+
+trim_stencil(::LocalStencil, args) = args
+
+
+"""
+
+    LinearStencil{D,S,L}
+
+
+"""
+struct LinearStencil{D,S,L} <: Stencil end
+
+eachneighbor(::LinearStencil{D,S,L}, args::TupN{Int}) where {D,S,L} =
+    LinearHood{D,S,L}(args)
+
+function trim_stencil(::LinearStencil{D,S,L}, args::NTup{N,AURange}) where {D,S,L,N}
+    map(ntuple(identity, Val(N)), args) do d, arg
+        ifelse(isequal(D, d),
+            range(first(arg) - min(S, 0), last(arg) - max(S+L, 0)),
+            range(first(arg), last(arg)))
     end
 end

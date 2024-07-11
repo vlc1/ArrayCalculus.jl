@@ -22,4 +22,4 @@ trim(this, dim, args) =
 trim_support(::NullSupport, _, _, args) = args
 
 trim_support(::HasStencil, this, dim, args) =
-    trim_stencil(stencil(this, dim), args)
+    trim_stencil(Stencil(this, dim), args)
