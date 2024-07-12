@@ -15,9 +15,10 @@ struct Operation{T,N,O<:Nullary,R<:NTuple{N,AURange}} <: AArr{T,N}
     rngs::R
 
     function Operation(op::O, rngs::R) where {N,O<:Nullary,R<:NTuple{N,AURange}}
-#        all(issubset.(rngs, axes(op))) || error("Invalid ranges.")
+        all(issubset.(rngs, axes(op))) || error("Invalid ranges.")
 
-        T = Base._return_type(getindex, Tuple{O,Vararg{Int,N}})
+#        T = Base._return_type(getindex, Tuple{O,Vararg{Int,N}})
+        T = Base.promote_op(getindex, O, ntuple(Returns(Int), Val(N))...)
         new{T,N,O,R}(op, rngs)
     end
 end

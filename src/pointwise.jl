@@ -19,7 +19,7 @@ arguments(this::⊙) = this.args
 
 # interface
 
-@inline @propagate_inbounds function getindex(this::⊙, I::Int...)
+@inline @propagate_inbounds function getindex(this::⊙, I...)
     f = handle(this)
 
     args = map(arguments(this)) do el
@@ -29,11 +29,16 @@ arguments(this::⊙) = this.args
     f(args...)
 end
 
+# ambiguity resolution
+getindex(this::⊙, ::Colon...) = Operation(this, axes(this))
+
+# https://docs.julialang.org/en/v1/manual/methods/#Output-type-computation
 function eltype(this::⊙)
     f = handle(this)
     args = arguments(this)
 
-    Base._return_type(f, Tuple{eltype.(args)...})
+#    Base._return_type(f, Tuple{eltype.(args)...})
+    Base.promote_op(f, eltype.(args)...)
 end
 
 function axes(this::⊙)

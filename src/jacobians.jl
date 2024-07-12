@@ -12,6 +12,9 @@ Base.print_without_params(::Type{<:Jac}) = false
 
 # interface
 
+trim(::Type{<:Jac{N,O}}, dim, args) where {N,O} =
+    trim(O, dim, args)..., trim(O, Dim{N}(), args)...
+
 getindex(this::Ret{<:Jac{N,O}}, ind::Int...) where {N,O} =
     getindex_jac(OperatorSupport(O, Dim{N}()), this, ind...)
 
