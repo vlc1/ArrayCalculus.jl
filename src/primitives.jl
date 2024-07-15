@@ -32,8 +32,14 @@ handle(this::Forward) = this.f
 
     J = ntuple(d -> ifelse(isequal(d, M), I[d]+1, I[d]), Val(N))
 
-    f(x[J...], x[I...])
+    f(x[I...], x[J...])
 end
+#
+## jacobian
+#
+#OperatorSparsity(::Type{<:Jac{1,<:Forward}}) = HasStencil()
+#Stencil(::Type{<:Jac{1,,<:Forward{N}}}) where {N} = LinearStencil{N,0,2}()
+
 
 """
 

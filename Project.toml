@@ -1,4 +1,4 @@
-name = "ArrayOperations"
+name = "ArrayCalculus"
 uuid = "4e8b87f5-c234-4a62-9c9e-cb6d82e9539d"
 authors = ["Vincent Le Chenadec <vincentlechenadec@gmail.com> and contributors"]
 version = "1.0.0-DEV"

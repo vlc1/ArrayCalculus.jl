@@ -1,12 +1,12 @@
-using Symbolics # ArrayOperations imports arguments
-using ArrayOperations
+using Symbolics # ArrayCalculus imports arguments
+using ArrayCalculus
 using Test
 
 import Base: getindex,
              @propagate_inbounds
 
-import ArrayOperations: OperatorSparsity,
-                        Stencil
+import ArrayCalculus: OperatorSparsity,
+                      Stencil
 
 const ∇₁ = ∇{Tuple{1}}()
 const ∇₂ = ∇{Tuple{2}}()
@@ -26,7 +26,7 @@ end
 OperatorSparsity(::Type{<:Jac{1,TerOp}}) = HasStencil()
 Stencil(::Type{<:Jac{1,TerOp}}) = LocalStencil()
 
-@inline @propagate_inbounds function getindex(this::Ret{<:Jac{1, TerOp}}, arg::Neighbor{1,Tuple{0}})
+@inline @propagate_inbounds function getindex(this::Ret{<:Jac{1,TerOp}}, arg::Neighbor{1,Tuple{0}})
     i, = origin(arg)
     _, y, _ = arguments(this)
 
@@ -38,7 +38,7 @@ end
 OperatorSparsity(::Type{<:Jac{2,TerOp}}) = HasStencil()
 Stencil(::Type{<:Jac{2,TerOp}}) = LinearStencil{1,-1,1}()
 
-@inline @propagate_inbounds function getindex(this::Ret{<:Jac{2, TerOp}}, arg::Neighbor{1,Tuple{-1}})
+@inline @propagate_inbounds function getindex(this::Ret{<:Jac{2,TerOp}}, arg::Neighbor{1,Tuple{-1}})
     i, = origin(arg)
     x, _, _ = arguments(this)
 

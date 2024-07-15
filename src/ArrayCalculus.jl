@@ -1,4 +1,4 @@
-module ArrayOperations
+module ArrayCalculus
 
 using Base: @propagate_inbounds,
             tail
