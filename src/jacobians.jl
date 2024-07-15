@@ -11,19 +11,19 @@ const Jac = Jacobian
 Base.print_without_params(::Type{<:Jac}) = false
 
 # interface
-
-trim(::Type{<:Jac{N,O}}, dim, args) where {N,O} =
-    trim(O, dim, args)..., trim(O, Dim{N}(), args)...
-
-getindex(this::Ret{<:Jac{N,O}}, ind::Int...) where {N,O} =
-    getindex_jac(OperatorSupport(O, Dim{N}()), this, ind...)
+#
+#trim(::Type{<:Jac{N,O}}, dim, args) where {N,O} =
+#    trim(O, dim, args)..., trim(O, Dim{N}(), args)...
+#
+#getindex(this::Ret{<:Jac{N,O}}, ind::Int...) where {N,O} =
+#    getindex_jac(OperatorSupport(O, Dim{N}()), this, ind...)
 
 #
 
-getindex_jac(::NullSupport, this, ::Int...) = zero(eltype(this))
-
-getindex_jac(::HasStencil, this::Ret{<:Jac{N,O}}, ind::Int...) where {N,O} =
-    getindex_jac(Stencil(O, Dim{N}()), this, ind...)
+#getindex_jac(::NullSupport, this, ::Int...) = zero(eltype(this))
+#
+#getindex_jac(::HasStencil, this::Ret{<:Jac{N,O}}, ind::Int...) where {N,O} =
+#    getindex_jac(Stencil(O, Dim{N}()), this, ind...)
 #
 #function getindex_jac(f::Singleton{T}, this, ind::Int...) where {N,T<:NTup{N,Any}}
 #    is = ind[begin:begin+N-1]
@@ -34,6 +34,7 @@ getindex_jac(::HasStencil, this::Ret{<:Jac{N,O}}, ind::Int...) where {N,O} =
 #    ifelse(collocates(neighbor, js), getindex(this, neighbor), zero(eltype(this)))
 #end
 
+#=
 # a little faster than generic implementation
 function getindex_jac(st::LocalStencil, this, indices::Int...)
     is, js = half(indices)
@@ -66,3 +67,4 @@ function getindex_neighbors(hood::Neighborhood, this, indices, state)
 
     getindex_neighbors(hood, this, indices, state)
 end
+=#

@@ -1,8 +1,16 @@
 abstract type Stencil end
 
+Stencil(::Type) = error("Not implemented.")
+
+Stencil(::T) where{T} = Stencil(T)
+
+#=
+abstract type Stencil end
+
 Stencil(::Type, dim) = error("Not implemented.")
 
 Stencil(::O, dim) where{O} = Stencil(O, dim)
+=#
 #=
 
 """
@@ -34,8 +42,8 @@ end
 struct LocalStencil <: Stencil end
 
 eachneighbor(::LocalStencil, args::TupN{Int}) = LocalHood(args)
-
-trim_stencil(::LocalStencil, args) = args
+#
+#trim_stencil(::LocalStencil, args) = args
 
 
 """
@@ -48,11 +56,11 @@ struct LinearStencil{D,S,L} <: Stencil end
 
 eachneighbor(::LinearStencil{D,S,L}, args::TupN{Int}) where {D,S,L} =
     LinearHood{D,S,L}(args)
-
-function trim_stencil(::LinearStencil{D,S,L}, args::NTup{N,AURange}) where {D,S,L,N}
-    map(ntuple(identity, Val(N)), args) do d, arg
-        ifelse(isequal(D, d),
-            range(first(arg) - min(S, 0), last(arg) - max(S+L, 0)),
-            range(first(arg), last(arg)))
-    end
-end
+#
+#function trim_stencil(::LinearStencil{D,S,L}, args::NTup{N,AURange}) where {D,S,L,N}
+#    map(ntuple(identity, Val(N)), args) do d, arg
+#        ifelse(isequal(D, d),
+#            range(first(arg) - min(S, 0), last(arg) - max(S+L, 0)),
+#            range(first(arg), last(arg)))
+#    end
+#end

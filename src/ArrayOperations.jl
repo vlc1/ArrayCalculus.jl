@@ -9,15 +9,15 @@ import Base: eltype,
              first,
              tail,
              isdone,
-             length,
+#             length,
              size,
-             axes,
+#             axes,
              getindex,
              *,
              +,
              -
-
-import Base.Broadcast: broadcastable
+#
+#import Base.Broadcast: broadcastable
 
 using Base.Cartesian
 #
@@ -40,8 +40,10 @@ export Dim,
        eachneighbor,
        LocalNeighborhood,
        LinearNeighborhood,
-       OperatorSupport,
-       NullSupport,
+#       OperatorSupport,
+#       NullSupport,
+       OperatorSparsity,
+       NullOperator,
        HasStencil,
        Stencil,
 #       Singleton,
@@ -82,7 +84,8 @@ include("exceptions.jl")
 #include("arity.jl")
 include("operators.jl")
 include("neighbors.jl")
-include("supports.jl")
+#include("supports.jl")
+include("sparsity.jl")
 include("stencils.jl")
 #include("loosened.jl")
 include("returned.jl")
