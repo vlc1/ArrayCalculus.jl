@@ -17,7 +17,6 @@ struct Operation{T,N,O<:Nullary,R<:NTuple{N,AURange}} <: AArr{T,N}
     function Operation(op::O, rngs::R) where {N,O<:Nullary,R<:NTuple{N,AURange}}
 #        all(issubset.(rngs, axes(op))) || error("Invalid ranges.")
 #
-#        T = Base._return_type(getindex, Tuple{O,Vararg{Int,N}})
         T = Base.promote_op(getindex, O, ntuple(Returns(Int), Val(N))...)
         new{T,N,O,R}(op, rngs)
     end
@@ -31,8 +30,6 @@ ranges(this::Operation) = this.rngs
 # constructor
 
 getindex(op::Nullary, rngs::AURange...) = Operation(op, rngs)
-#
-#getindex(op::Nullary, ::Colon...) = Operation(op, axes(op))
 
 # array interface
 
@@ -42,7 +39,9 @@ function getindex(this::Operation{T,N}, I::Varg{Int,N}) where {T,N}
     J = getindex.(ranges(this), I)
     getindex(operator(this), J...)
 end
-#
-## broadcasting interface
-#
-#broadcastable(this::Nullary) = getindex(this, axes(this)...)
+
+#=
+# broadcasting interface
+
+broadcastable(this::Nullary) = getindex(this, axes(this)...)
+=#

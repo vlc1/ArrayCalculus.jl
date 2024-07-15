@@ -28,9 +28,6 @@ Dim(::∇{Tuple{N}}) where {N} = Dim{N}()
 
 (::∇{Tuple{}})(this::Nullary) = this
 (::∇)(this::Nullary) = error("Not differentiable.")
-#
-#(::∇{NTup{P,1}})(this::Loose{N}) where {P,N} =
-#    Loose{N}(∇{NTup{P,N}}()(operator(this)), arguments(this))
 
 
 """
@@ -58,7 +55,26 @@ operator(this::Diff) = this.op
 
 (nabla::∇)(this::Operator) = Diff(nabla, this)
 
-# interface
+"""
 
-# (::Diff)(::TupN{AArr}, args...) = error("Needs implementing.")
-# getindex(this::Fully{<:Diff}, ...) = error("Needs implementing.")
+    Jacobian
+
+
+"""
+const Jacobian{N,O,S} = Diff{Tup{N},S,O}
+
+const Jac = Jacobian
+
+Base.print_without_params(::Type{<:Jac}) = false
+
+"""
+
+    Hessian
+
+
+"""
+const Hessian{M,N,O,S} = Diff{Tup{M,N},S,O}
+
+const Hess = Hessian
+
+Base.print_without_params(::Type{<:Hess}) = false

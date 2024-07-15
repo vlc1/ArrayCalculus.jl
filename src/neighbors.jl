@@ -40,24 +40,24 @@ end
 
 collocates(this::Neighbor{N}, indices::NTup{N,Int}) where {N} =
     isequal(Tuple(this), indices)
-#=
 
-# slower than a conversion to Tuple
-collocates(this::Neighbor{0}, ::Tuple{}) = true
 
-# leverages the fact that `state <: Neighbor`
-function collocates(prev::Neighbor{N}, (x, args...)::NTup{N,Int}) where {N}
-    el, next = iterate(prev)
-    isequal(el, x) && collocates(next, args)
-end
+"""
 
-=#
-# row(this) .+ fieldtypes(T)
+    Neighborbood
 
+
+"""
 abstract type Neighborhood{N} end
 
 const Hood = Neighborhood
 
+"""
+
+    LocalNeighborhood
+
+
+"""
 struct LocalNeighborhood{N} <: Hood{N}
     args::NTup{N,Int}
 end
@@ -86,6 +86,12 @@ iterate(this::LocalHood{N}) where {N} = Neighbor{NTup{N,0}}(origin(this)), nothi
 iterate(::LocalHood, ::Nothing) = nothing
 
 
+"""
+
+    LinearNeighborhood
+
+
+"""
 struct LinearNeighborhood{D,S,L,N} <: Hood{N}
     args::NTup{N,Int}
 
@@ -143,3 +149,25 @@ iterate(::LinearHood, ::LinearHood{D,S,0}) where {D,S} = nothing
 
 iterate(this::LinearHood, state::LinearHood=this) =
     first(state), Base.tail(state)
+
+# getindex
+
+function _getindex_neighbor(hood::Neighborhood, this, arg)
+    res = iterate(hood)
+    isnothing(res) && return zero(eltype(this))
+    neighbor, state = res
+
+    collocates(neighbor, arg) && return getindex(this, neighbor)
+
+    _getindex_neighbor(hood, this, arg, state)
+end
+
+function _getindex_neighbor(hood::Neighborhood, this, arg, state)
+    res = iterate(hood, state)
+    isnothing(res) && return zero(eltype(this))
+    neighbor, state = res
+
+    collocates(neighbor, arg) && return getindex(this, neighbor)
+
+    _getindex_neighbor(hood, this, arg, state)
+end

@@ -46,10 +46,8 @@ const Nullary = Operator{Nullarity}
 const Unary = Operator{Unarity}
 const Ary{N} = Operator{Arity{N}}
 
-#
-#
-#size(this::Nullary) = length.(axes(this))
-#
-#length(this::Nullary) = prod(size(this))
-#
-#(this::Nullary)() = getindex(this, axes(this)...)
+# interface
+
+getindex(this::Nullary, args...) =
+    _getindex_sparsity(OperatorSparsity(this), this, args...)
+
